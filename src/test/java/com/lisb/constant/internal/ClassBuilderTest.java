@@ -28,8 +28,8 @@ public class ClassBuilderTest {
 	@Test
 	public void testBuild() throws IOException {
 		final ClassBuilder builder = new ClassBuilder(
-				"com.lisb.constant.internal", "ClassBuilderTestSource",
-				new Case[] { Case.Original, Case.SnakeCase });
+				"com.lisb.constant.internal", "TestSource", new Case[] {
+						Case.Original, Case.SnakeCase }, true);
 		builder.addFields("test");
 		builder.addFields("testCase");
 		builder.addFields("TestCase");
@@ -39,7 +39,7 @@ public class ClassBuilderTest {
 		writer.flush();
 		writer.close();
 
-		Assert.assertEquals(getTestSource("ClassBuilderTestSource$$C.java"),
+		Assert.assertEquals(getTestSource("TestSource$$C.java"),
 				writer.toString());
 	}
 
