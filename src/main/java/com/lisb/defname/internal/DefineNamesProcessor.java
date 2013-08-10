@@ -1,4 +1,4 @@
-package com.lisb.constant.internal;
+package com.lisb.defname.internal;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -22,21 +22,21 @@ import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
-import com.lisb.constant.Constant;
-import com.lisb.constant.Constants;
+import com.lisb.defname.DefineName;
+import com.lisb.defname.DefineNames;
 
-@SupportedAnnotationTypes("com.lisb.constant.Constants")
-public class ConstantProcessor extends AbstractProcessor {
+@SupportedAnnotationTypes("com.lisb.defname.DefineNames")
+public class DefineNamesProcessor extends AbstractProcessor {
 
 	private Filer filer;
 	private Elements elements;
 	private final boolean isTest;
 
-	public ConstantProcessor() {
+	public DefineNamesProcessor() {
 		this(false);
 	}
 
-	public ConstantProcessor(boolean isTest) {
+	public DefineNamesProcessor(boolean isTest) {
 		this.isTest = isTest;
 	}
 
@@ -50,33 +50,34 @@ public class ConstantProcessor extends AbstractProcessor {
 	@Override
 	public boolean process(final Set<? extends TypeElement> elements,
 			final RoundEnvironment env) {
-		final Map<TypeElement, ClassBuilder> classBuilderMap = createClassBuilder(env);
-		build(classBuilderMap);
+		final Map<TypeElement, DefineNameClassWriter> classWriterMap = createClassWriter(env);
+		build(classWriterMap);
 
 		return true;
 	}
 
-	private void build(final Map<TypeElement, ClassBuilder> classBuilderMap) {
-		for (final Entry<TypeElement, ClassBuilder> entry : classBuilderMap
+	private void build(
+			final Map<TypeElement, DefineNameClassWriter> classWriterMap) {
+		for (final Entry<TypeElement, DefineNameClassWriter> entry : classWriterMap
 				.entrySet()) {
 			final TypeElement typeElement = entry.getKey();
-			final ClassBuilder classBuilder = entry.getValue();
-			writeToFile(typeElement, classBuilder);
+			final DefineNameClassWriter classWriter = entry.getValue();
+			writeToFile(typeElement, classWriter);
 			if (isTest) {
-				writeToStdout(typeElement, classBuilder);
+				writeToStdout(typeElement, classWriter);
 			}
 		}
 	}
 
 	private void writeToFile(final TypeElement typeElement,
-			final ClassBuilder classBuilder) {
+			final DefineNameClassWriter classWriter) {
 		JavaFileObject jfo = null;
 		Writer writer = null;
 		try {
-			jfo = filer.createSourceFile(classBuilder.getClassFQDN(),
+			jfo = filer.createSourceFile(classWriter.getClassFQDN(),
 					typeElement);
 			writer = jfo.openWriter();
-			classBuilder.build(writer);
+			classWriter.write(writer);
 		} catch (IOException e) {
 			processingEnv.getMessager().printMessage(Kind.ERROR,
 					"IOException is occured." + e.getMessage(), typeElement);
@@ -92,10 +93,10 @@ public class ConstantProcessor extends AbstractProcessor {
 	}
 
 	private void writeToStdout(final TypeElement typeElement,
-			final ClassBuilder classBuilder) {
+			final DefineNameClassWriter classWriter) {
 		final Writer writer = new OutputStreamWriter(System.out);
 		try {
-			classBuilder.build(writer);
+			classWriter.write(writer);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -107,17 +108,17 @@ public class ConstantProcessor extends AbstractProcessor {
 		}
 	}
 
-	private Map<TypeElement, ClassBuilder> createClassBuilder(
+	private Map<TypeElement, DefineNameClassWriter> createClassWriter(
 			final RoundEnvironment env) {
-		final Map<TypeElement, ClassBuilder> targetClassMap = new HashMap<TypeElement, ClassBuilder>();
+		final Map<TypeElement, DefineNameClassWriter> targetClassMap = new HashMap<TypeElement, DefineNameClassWriter>();
 		for (final Element element : env
-				.getElementsAnnotatedWith(Constants.class)) {
+				.getElementsAnnotatedWith(DefineNames.class)) {
 			final ElementKind kind = element.getKind();
 			if (kind.isClass()) {
 				final TypeElement typeElement = (TypeElement) element;
 				processingEnv.getMessager().printMessage(Kind.NOTE,
 						"kind is class.", element);
-				final ClassBuilder classBuilder = getOrCreateClassBuilder(
+				final DefineNameClassWriter classWriter = getOrCreateClassWriter(
 						targetClassMap, typeElement);
 				final List<? extends Element> members = elements
 						.getAllMembers(typeElement);
@@ -125,13 +126,13 @@ public class ConstantProcessor extends AbstractProcessor {
 					if (!member.getKind().isField()) {
 						continue;
 					}
-					final Constant constant = member
-							.getAnnotation(Constant.class);
+					final DefineName constant = member
+							.getAnnotation(DefineName.class);
 					if (constant != null) {
-						classBuilder.addFields(constant.value());
+						classWriter.addFields(constant.value());
 					} else {
-						classBuilder.addFields(member.getSimpleName()
-								.toString());
+						classWriter
+								.addFields(member.getSimpleName().toString());
 					}
 				}
 			} else {
@@ -142,19 +143,20 @@ public class ConstantProcessor extends AbstractProcessor {
 		return targetClassMap;
 	}
 
-	private ClassBuilder getOrCreateClassBuilder(
-			final Map<TypeElement, ClassBuilder> classBuilderMap,
+	private DefineNameClassWriter getOrCreateClassWriter(
+			final Map<TypeElement, DefineNameClassWriter> classWriterMap,
 			final TypeElement typeElement) {
-		ClassBuilder targetClass = classBuilderMap.get(typeElement);
+		DefineNameClassWriter targetClass = classWriterMap.get(typeElement);
 		if (targetClass == null) {
 			final String packageName = ((PackageElement) typeElement
 					.getEnclosingElement()).getQualifiedName().toString();
-			final String className = typeElement.getQualifiedName().toString();
-			final Constants.Case[] cases = typeElement.getAnnotation(
-					Constants.class).value();
-			targetClass = new ClassBuilder(packageName, className, cases,
-					isTest);
-			classBuilderMap.put(typeElement, targetClass);
+			final String classSimpleName = typeElement.getSimpleName()
+					.toString();
+			final DefineNames.Case[] cases = typeElement.getAnnotation(
+					DefineNames.class).value();
+			targetClass = new DefineNameClassWriter(packageName,
+					classSimpleName, cases, isTest);
+			classWriterMap.put(typeElement, targetClass);
 		}
 		return targetClass;
 	}

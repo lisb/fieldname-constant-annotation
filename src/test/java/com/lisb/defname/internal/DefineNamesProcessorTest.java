@@ -1,11 +1,13 @@
-package com.lisb.constant.internal;
+package com.lisb.defname.internal;
 
 import java.nio.charset.Charset;
 import java.util.Locale;
 
 import org.seasar.aptina.unit.AptinaTestCase;
 
-public class ConstantProcessorTest extends AptinaTestCase {
+import com.lisb.defname.internal.DefineNamesProcessor;
+
+public class DefineNamesProcessorTest extends AptinaTestCase {
 
 	@Override
 	protected void setUp() throws Exception {
@@ -21,7 +23,7 @@ public class ConstantProcessorTest extends AptinaTestCase {
 
 	public void testProcess() throws Exception {
 		// テスト対象の Annotation Processor を生成して追加
-		final ConstantProcessor processor = new ConstantProcessor(true);
+		final DefineNamesProcessor processor = new DefineNamesProcessor(true);
 		addProcessor(processor);
 
 		// コンパイル対象を追加
@@ -32,8 +34,8 @@ public class ConstantProcessorTest extends AptinaTestCase {
 
 		// テスト対象の Annotation Processor が生成したソースを検証
 		assertEqualsGeneratedSourceWithResource(
-				ConstantProcessorTest.class.getResource("TestSource$$C.java"),
-				"com.lisb.constant.internal.TestSource$$C");
+				DefineNamesProcessorTest.class.getResource("TestSource$$C.java"),
+				"com.lisb.defname.internal.TestSource$$C");
 	}
 
 }

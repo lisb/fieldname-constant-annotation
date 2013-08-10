@@ -1,4 +1,4 @@
-package com.lisb.constant.internal;
+package com.lisb.defname.internal;
 
 public class TestSource$$C {
   public static final String TestCase = "TestCase";

@@ -1,10 +1,10 @@
-package com.lisb.constant;
+package com.lisb.defname;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
-public @interface Constant {
+public @interface DefineName {
 
 	String value();
 

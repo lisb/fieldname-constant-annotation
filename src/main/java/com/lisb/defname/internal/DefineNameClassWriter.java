@@ -1,4 +1,4 @@
-package com.lisb.constant.internal;
+package com.lisb.defname.internal;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -12,45 +12,47 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.lisb.constant.Constants;
+import com.lisb.defname.DefineNames;
 import com.squareup.java.JavaWriter;
 
-class ClassBuilder {
+class DefineNameClassWriter {
 
 	private static final String GENERATE_CLASS_SUFFIX = "$$C";
 
 	private final String packageName;
-	private final String targetClass;
-	private final Constants.Case[] cases;
+	private final String targetClassSimpleName;
+	private final DefineNames.Case[] cases;
 	private final boolean isTest;
 	private final Set<String> fields = new HashSet<String>();
 
-	ClassBuilder(final String packageName, final String targetClass,
-			final Constants.Case[] cases) {
-		this(packageName, targetClass, cases, false);
+	DefineNameClassWriter(final String packageName,
+			final String targetClassSimpleName, final DefineNames.Case[] cases) {
+		this(packageName, targetClassSimpleName, cases, false);
 	}
 
-	ClassBuilder(final String packageName, final String targetClass,
-			final Constants.Case[] cases, final boolean isTest) {
+	DefineNameClassWriter(final String packageName,
+			final String targetClassSimpleName, final DefineNames.Case[] cases,
+			final boolean isTest) {
 		this.packageName = packageName;
-		this.targetClass = targetClass;
+		this.targetClassSimpleName = targetClassSimpleName;
 		this.cases = cases;
 		this.isTest = isTest;
 	}
 
 	void addFields(final String field) {
-		for (final Constants.Case c : cases) {
-			final String fieldName = c == Constants.Case.Original ? field
+		for (final DefineNames.Case c : cases) {
+			final String fieldName = c == DefineNames.Case.Original ? field
 					: convertToSnakeCase(field);
 			fields.add(fieldName);
 		}
 	}
 
 	String getClassFQDN() {
-		return targetClass + GENERATE_CLASS_SUFFIX;
+		return packageName + "." + targetClassSimpleName
+				+ GENERATE_CLASS_SUFFIX;
 	}
 
-	void build(final Writer writer) throws IOException {
+	void write(final Writer writer) throws IOException {
 		JavaWriter javaWriter = null;
 		try {
 			javaWriter = new JavaWriter(writer);

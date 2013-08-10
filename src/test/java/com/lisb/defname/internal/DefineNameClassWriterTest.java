@@ -1,4 +1,4 @@
-package com.lisb.constant.internal;
+package com.lisb.defname.internal;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,32 +10,35 @@ import java.io.StringWriter;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.lisb.constant.Constants.Case;
+import com.lisb.defname.DefineNames.Case;
+import com.lisb.defname.internal.DefineNameClassWriter;
 
-public class ClassBuilderTest {
+public class DefineNameClassWriterTest {
 
 	@Test
 	public void testConvertToSnakeCase() {
-		Assert.assertEquals("test", ClassBuilder.convertToSnakeCase("test"));
+		Assert.assertEquals("test",
+				DefineNameClassWriter.convertToSnakeCase("test"));
 		Assert.assertEquals("test_case",
-				ClassBuilder.convertToSnakeCase("testCase"));
+				DefineNameClassWriter.convertToSnakeCase("testCase"));
 		Assert.assertEquals("test_case",
-				ClassBuilder.convertToSnakeCase("TestCase"));
+				DefineNameClassWriter.convertToSnakeCase("TestCase"));
 		Assert.assertEquals("test_case_for_class_builder",
-				ClassBuilder.convertToSnakeCase("testCaseForClassBuilder"));
+				DefineNameClassWriter
+						.convertToSnakeCase("testCaseForClassBuilder"));
 	}
 
 	@Test
-	public void testBuild() throws IOException {
-		final ClassBuilder builder = new ClassBuilder(
-				"com.lisb.constant.internal", "TestSource", new Case[] {
+	public void testWrite() throws IOException {
+		final DefineNameClassWriter classWriter = new DefineNameClassWriter(
+				"com.lisb.defname.internal", "TestSource", new Case[] {
 						Case.Original, Case.SnakeCase }, true);
-		builder.addFields("test");
-		builder.addFields("testCase");
-		builder.addFields("TestCase");
-		builder.addFields("testCaseForClassBuilder");
+		classWriter.addFields("test");
+		classWriter.addFields("testCase");
+		classWriter.addFields("TestCase");
+		classWriter.addFields("testCaseForClassBuilder");
 		final StringWriter writer = new StringWriter();
-		builder.build(writer);
+		classWriter.write(writer);
 		writer.flush();
 		writer.close();
 

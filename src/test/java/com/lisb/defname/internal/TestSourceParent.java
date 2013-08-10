@@ -1,10 +1,10 @@
-package com.lisb.constant.internal;
+package com.lisb.defname.internal;
 
-import com.lisb.constant.Constant;
+import com.lisb.defname.DefineName;
 
 @SuppressWarnings("unused")
 public class TestSourceParent {
 	private String TestSourceParent;
-	@Constant("testCaseForClassBuilder")
+	@DefineName("testCaseForClassBuilder")
 	String TestCaseParent2;
 }
