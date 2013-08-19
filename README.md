@@ -5,7 +5,7 @@ apt を使いクラスのフィールドの名前一覧を定数として定義�
 ## 使用例
 
 ベースとなるクラス:
-```Java
+```java
 @DefineNames({ Case.Original, Case.SnakeCase })
 public class Example {
     private int exampleId;
@@ -15,7 +15,7 @@ public class Example {
 ```
 
 自動生成されるクラス:
-```Java
+```java
 public class _CExample {
     public static String example_id = "example_id";
     public static String exampleId = "exampleId";
