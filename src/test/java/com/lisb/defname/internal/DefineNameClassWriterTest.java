@@ -42,7 +42,7 @@ public class DefineNameClassWriterTest {
 		writer.flush();
 		writer.close();
 
-		Assert.assertEquals(getTestSource("TestSource$$C.java"),
+		Assert.assertEquals(getTestSource("_CTestSource.java"),
 				writer.toString());
 	}
 

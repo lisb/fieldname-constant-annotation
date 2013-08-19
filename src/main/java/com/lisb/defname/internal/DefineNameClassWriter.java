@@ -17,7 +17,8 @@ import com.squareup.java.JavaWriter;
 
 class DefineNameClassWriter {
 
-	private static final String GENERATE_CLASS_SUFFIX = "$$C";
+	private static final String GENERATE_CLASS_PREFIX = "_C";
+	private static final String GENERATE_CLASS_SUFFIX = "";
 
 	private final String packageName;
 	private final String targetClassSimpleName;
@@ -48,8 +49,8 @@ class DefineNameClassWriter {
 	}
 
 	String getClassFQDN() {
-		return packageName + "." + targetClassSimpleName
-				+ GENERATE_CLASS_SUFFIX;
+		return packageName + "." + GENERATE_CLASS_PREFIX
+				+ targetClassSimpleName + GENERATE_CLASS_SUFFIX;
 	}
 
 	void write(final Writer writer) throws IOException {

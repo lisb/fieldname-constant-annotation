@@ -34,8 +34,8 @@ public class DefineNamesProcessorTest extends AptinaTestCase {
 
 		// テスト対象の Annotation Processor が生成したソースを検証
 		assertEqualsGeneratedSourceWithResource(
-				DefineNamesProcessorTest.class.getResource("TestSource$$C.java"),
-				"com.lisb.defname.internal.TestSource$$C");
+				DefineNamesProcessorTest.class.getResource("_CTestSource.java"),
+				"com.lisb.defname.internal._CTestSource");
 	}
 
 }
