@@ -2,18 +2,20 @@ package com.lisb.defname.internal;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.lang.model.element.Modifier;
+
 import com.lisb.defname.DefineNames;
-import com.squareup.java.JavaWriter;
+import com.squareup.javawriter.JavaWriter;
 
 class DefineNameClassWriter {
 
@@ -58,7 +60,7 @@ class DefineNameClassWriter {
 		try {
 			javaWriter = new JavaWriter(writer);
 			javaWriter.emitPackage(packageName).beginType(getClassFQDN(),
-					"class", Modifier.PUBLIC);
+					"class", EnumSet.of(Modifier.PUBLIC));
 			final Collection<String> fields;
 			if (isTest) {
 				// テスト時はフィールドの並び順が予測可能なようにソートする
@@ -70,10 +72,9 @@ class DefineNameClassWriter {
 			}
 
 			for (final String field : fields) {
-				javaWriter
-						.emitField("String", field, Modifier.PUBLIC
-								| Modifier.STATIC | Modifier.FINAL, "\""
-								+ field + "\"");
+				javaWriter.emitField("String", field, EnumSet.of(
+						Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL), "\""
+						+ field + "\"");
 			}
 			javaWriter.endType();
 		} finally {
