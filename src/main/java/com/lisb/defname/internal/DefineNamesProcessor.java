@@ -118,7 +118,7 @@ public class DefineNamesProcessor extends AbstractProcessor {
 			if (kind.isClass()) {
 				final TypeElement typeElement = (TypeElement) element;
 				processingEnv.getMessager().printMessage(Kind.NOTE,
-						"create defname of \"" + typeElement.getSimpleName() + "\".", element);
+						"create defname of class \"" + typeElement.getSimpleName() + "\".");
 				final DefineNameClassWriter classWriter = getOrCreateClassWriter(
 						targetClassMap, typeElement);
 				final List<? extends Element> members = elements
