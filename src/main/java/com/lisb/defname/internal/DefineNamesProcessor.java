@@ -17,6 +17,7 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
@@ -116,27 +117,29 @@ public class DefineNamesProcessor extends AbstractProcessor {
 				.getElementsAnnotatedWith(DefineNames.class)) {
 			final ElementKind kind = element.getKind();
 			if (kind.isClass()) {
-				final TypeElement typeElement = (TypeElement) element;
-				processingEnv.getMessager().printMessage(Kind.NOTE,
-						"create defname of class \"" + typeElement.getSimpleName() + "\".");
-				final DefineNameClassWriter classWriter = getOrCreateClassWriter(
-						targetClassMap, typeElement);
-				final List<? extends Element> members = elements
-						.getAllMembers(typeElement);
-				for (final Element member : members) {
-					if (!member.getKind().isField()) {
-						continue;
-					}
-					final DefineName constant = member
-							.getAnnotation(DefineName.class);
-					if (constant != null) {
-						classWriter.addFields(constant.value());
-					} else {
-						classWriter
-								.addFields(member.getSimpleName().toString());
-					}
-				}
-			} else {
+                final TypeElement typeElement = (TypeElement) element;
+                processingEnv.getMessager().printMessage(Kind.NOTE,
+                        "create defname of class \"" + typeElement.getSimpleName() + "\".");
+                final boolean withStaticField = typeElement.getAnnotation(DefineNames.class).withStaticField();
+                final DefineNameClassWriter classWriter = getOrCreateClassWriter(
+                        targetClassMap, typeElement);
+                final List<? extends Element> members = elements
+                        .getAllMembers(typeElement);
+                for (final Element member : members) {
+                    if (!member.getKind().isField()
+                            || (!withStaticField && member.getModifiers().contains(Modifier.STATIC))) {
+                        continue;
+                    }
+                    final DefineName constant =
+                            member.getAnnotation(DefineName.class);
+                    if (constant != null) {
+                        classWriter.addFields(constant.value());
+                    } else {
+                        classWriter
+                                .addFields(member.getSimpleName().toString());
+                    }
+                }
+            } else {
 				processingEnv.getMessager().printMessage(Kind.ERROR,
 						"kind is unsupported." + kind.name(), element);
 			}

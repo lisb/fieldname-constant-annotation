@@ -1,11 +1,10 @@
 package com.lisb.defname.internal;
 
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Locale;
 
 import org.seasar.aptina.unit.AptinaTestCase;
-
-import com.lisb.defname.internal.DefineNamesProcessor;
 
 public class DefineNamesProcessorTest extends AptinaTestCase {
 
@@ -22,20 +21,37 @@ public class DefineNamesProcessorTest extends AptinaTestCase {
 	}
 
 	public void testProcess() throws Exception {
-		// テスト対象の Annotation Processor を生成して追加
-		final DefineNamesProcessor processor = new DefineNamesProcessor(true);
-		addProcessor(processor);
+        // テスト対象の Annotation Processor を生成して追加
+        final DefineNamesProcessor processor = new DefineNamesProcessor(true);
+        addProcessor(processor);
 
-		// コンパイル対象を追加
-		addCompilationUnit(TestSource.class);
+        // コンパイル対象を追加
+        addCompilationUnit(TestSource1Parent.class);
+        addCompilationUnit(TestSource1.class);
+        addCompilationUnit(TestSource2.class);
 
-		// コンパイル実行
-		compile();
+        // コンパイル実行
+        compile();
 
-		// テスト対象の Annotation Processor が生成したソースを検証
-		assertEqualsGeneratedSourceWithResource(
-				DefineNamesProcessorTest.class.getResource("_CTestSource.java"),
-				"com.lisb.defname.internal._CTestSource");
-	}
+        // テスト対象の Annotation Processor が生成したソースを検証
+        assertEqualsGeneratedSourceWithResource(DefineNamesProcessorTest.class.getResource("_CTestSource1.java"),
+                "com.lisb.defname.internal._CTestSource1");
+        assertEqualsGeneratedSourceWithResource(DefineNamesProcessorTest.class.getResource("_CTestSource2.java"),
+                "com.lisb.defname.internal._CTestSource2");
+    }
 
+    private void testProcess(Class<?> target, URL expectedResourceUrl, String exportFilename) throws Exception {
+        // テスト対象の Annotation Processor を生成して追加
+        final DefineNamesProcessor processor = new DefineNamesProcessor(true);
+        addProcessor(processor);
+
+        // コンパイル対象を追加
+        addCompilationUnit(target);
+
+        // コンパイル実行
+        compile();
+
+        // テスト対象の Annotation Processor が生成したソースを検証
+        assertEqualsGeneratedSourceWithResource(expectedResourceUrl, exportFilename);
+    }
 }

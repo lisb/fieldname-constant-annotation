@@ -11,4 +11,5 @@ public @interface DefineNames {
 	}
 
 	Case[] value() default Case.Original;
+    boolean withStaticField() default false;
 }

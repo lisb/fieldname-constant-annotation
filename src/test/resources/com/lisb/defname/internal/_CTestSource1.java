@@ -1,6 +1,6 @@
 package com.lisb.defname.internal;
 
-public class _CTestSource {
+public class _CTestSource1 {
   public static final String TestCase = "TestCase";
   public static final String test = "test";
   public static final String testCase = "testCase";
