@@ -4,7 +4,7 @@
 
   <groupId>com.lisb.defname</groupId>
   <artifactId>defname</artifactId>
-  <version>0.2.1-SNAPSHOT</version>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
 
   <name>defname</name>
