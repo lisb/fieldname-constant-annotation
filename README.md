@@ -1,4 +1,4 @@
-# Defname
+# fieldname-constant-annotation
 
 apt を使いクラスのフィールドの名前一覧を定数として定義したクラスを自動生成します．
 
