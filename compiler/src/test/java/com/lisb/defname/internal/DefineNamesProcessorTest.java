@@ -1,10 +1,10 @@
 package com.lisb.defname.internal;
 
+import org.seasar.aptina.unit.AptinaTestCase;
+
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Locale;
-
-import org.seasar.aptina.unit.AptinaTestCase;
 
 public class DefineNamesProcessorTest extends AptinaTestCase {
 
@@ -22,7 +22,7 @@ public class DefineNamesProcessorTest extends AptinaTestCase {
 
 	public void testProcess() throws Exception {
         // テスト対象の Annotation Processor を生成して追加
-        final DefineNamesProcessor processor = new DefineNamesProcessor(true);
+        final DefineNamesProcessor processor = new DefineNamesProcessor();
         addProcessor(processor);
 
         // コンパイル対象を追加
@@ -34,15 +34,15 @@ public class DefineNamesProcessorTest extends AptinaTestCase {
         compile();
 
         // テスト対象の Annotation Processor が生成したソースを検証
-        assertEqualsGeneratedSourceWithResource(DefineNamesProcessorTest.class.getResource("_CTestSource1.java"),
+        assertEqualsGeneratedSourceWithResource(getClass().getResource("Expected_CTestSource1.java"),
                 "com.lisb.defname.internal._CTestSource1");
-        assertEqualsGeneratedSourceWithResource(DefineNamesProcessorTest.class.getResource("_CTestSource2.java"),
+        assertEqualsGeneratedSourceWithResource(getClass().getResource("Expected_CTestSource2.java"),
                 "com.lisb.defname.internal._CTestSource2");
     }
 
     private void testProcess(Class<?> target, URL expectedResourceUrl, String exportFilename) throws Exception {
         // テスト対象の Annotation Processor を生成して追加
-        final DefineNamesProcessor processor = new DefineNamesProcessor(true);
+        final DefineNamesProcessor processor = new DefineNamesProcessor();
         addProcessor(processor);
 
         // コンパイル対象を追加

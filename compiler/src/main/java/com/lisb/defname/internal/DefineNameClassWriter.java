@@ -1,9 +1,11 @@
 package com.lisb.defname.internal;
 
+import com.lisb.defname.DefineNames;
+import com.squareup.javawriter.JavaWriter;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -14,9 +16,6 @@ import java.util.regex.Pattern;
 
 import javax.lang.model.element.Modifier;
 
-import com.lisb.defname.DefineNames;
-import com.squareup.javawriter.JavaWriter;
-
 class DefineNameClassWriter {
 
 	private static final String GENERATE_CLASS_PREFIX = "_C";
@@ -25,21 +24,13 @@ class DefineNameClassWriter {
 	private final String packageName;
 	private final String targetClassSimpleName;
 	private final DefineNames.Case[] cases;
-	private final boolean isTest;
 	private final Set<String> fields = new HashSet<String>();
 
 	DefineNameClassWriter(final String packageName,
 			final String targetClassSimpleName, final DefineNames.Case[] cases) {
-		this(packageName, targetClassSimpleName, cases, false);
-	}
-
-	DefineNameClassWriter(final String packageName,
-			final String targetClassSimpleName, final DefineNames.Case[] cases,
-			final boolean isTest) {
 		this.packageName = packageName;
 		this.targetClassSimpleName = targetClassSimpleName;
 		this.cases = cases;
-		this.isTest = isTest;
 	}
 
 	void addFields(final String field) {
@@ -61,15 +52,10 @@ class DefineNameClassWriter {
 			javaWriter = new JavaWriter(writer);
 			javaWriter.emitPackage(packageName).beginType(getClassFQDN(),
 					"class", EnumSet.of(Modifier.PUBLIC));
-			final Collection<String> fields;
-			if (isTest) {
-				// テスト時はフィールドの並び順が予測可能なようにソートする
-				final List<String> list = new ArrayList<String>(this.fields);
-				Collections.sort(list);
-				fields = list;
-			} else {
-				fields = this.fields;
-			}
+
+			// フィールドの並び順が予測可能なようにソートする
+			final List<String> fields = new ArrayList<String>(this.fields);
+			Collections.sort(fields);
 
 			for (final String field : fields) {
 				javaWriter.emitField("String", field, EnumSet.of(
