@@ -1,0 +1,13 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'com.lisb.defname'
+version = '1.0.0-SNAPSHOT'
+archivesBaseName = 'annotation'
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+sourceCompatibility = "1.6"
+targetCompatibility = "1.6"

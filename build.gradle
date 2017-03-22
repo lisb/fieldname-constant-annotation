@@ -1,0 +1,18 @@
+apply plugin: 'java'
+
+description = "defname"
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        maven { url "http://maven.seasar.org/maven2" }
+    }
+}

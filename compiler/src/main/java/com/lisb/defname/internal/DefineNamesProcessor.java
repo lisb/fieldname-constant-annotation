@@ -1,7 +1,9 @@
 package com.lisb.defname.internal;
 
+import com.lisb.defname.DefineName;
+import com.lisb.defname.DefineNames;
+
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
@@ -24,23 +26,11 @@ import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
-import com.lisb.defname.DefineName;
-import com.lisb.defname.DefineNames;
-
 @SupportedAnnotationTypes("com.lisb.defname.DefineNames")
 public class DefineNamesProcessor extends AbstractProcessor {
 
 	private Filer filer;
 	private Elements elements;
-	private final boolean isTest;
-
-	public DefineNamesProcessor() {
-		this(false);
-	}
-
-	public DefineNamesProcessor(boolean isTest) {
-		this.isTest = isTest;
-	}
 
 	@Override
 	public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -65,9 +55,6 @@ public class DefineNamesProcessor extends AbstractProcessor {
 			final TypeElement typeElement = entry.getKey();
 			final DefineNameClassWriter classWriter = entry.getValue();
 			writeToFile(typeElement, classWriter);
-			if (isTest) {
-				writeToStdout(typeElement, classWriter);
-			}
 		}
 	}
 
@@ -90,22 +77,6 @@ public class DefineNamesProcessor extends AbstractProcessor {
 				} catch (IOException e) {
 
 				}
-			}
-		}
-	}
-
-	private void writeToStdout(final TypeElement typeElement,
-			final DefineNameClassWriter classWriter) {
-		final Writer writer = new OutputStreamWriter(System.out);
-		try {
-			classWriter.write(writer);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				writer.close();
-			} catch (IOException e) {
-
 			}
 		}
 	}
@@ -158,8 +129,7 @@ public class DefineNamesProcessor extends AbstractProcessor {
 					.toString();
 			final DefineNames.Case[] cases = typeElement.getAnnotation(
 					DefineNames.class).value();
-			targetClass = new DefineNameClassWriter(packageName,
-					classSimpleName, cases, isTest);
+			targetClass = new DefineNameClassWriter(packageName, classSimpleName, cases);
 			classWriterMap.put(typeElement, targetClass);
 		}
 		return targetClass;

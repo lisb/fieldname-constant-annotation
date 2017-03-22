@@ -31,8 +31,7 @@ public class DefineNameClassWriterTest {
 	@Test
 	public void testWrite() throws IOException {
 		final DefineNameClassWriter classWriter = new DefineNameClassWriter(
-				"com.lisb.defname.internal", "TestSource1", new Case[] {
-						Case.Original, Case.SnakeCase }, true);
+				"com.lisb.defname.internal", "TestSource1", new Case[] {Case.Original, Case.SnakeCase });
 		classWriter.addFields("test");
 		classWriter.addFields("testCase");
 		classWriter.addFields("TestCase");
@@ -42,7 +41,7 @@ public class DefineNameClassWriterTest {
 		writer.flush();
 		writer.close();
 
-		Assert.assertEquals(getTestSource("_CTestSource1.java"),
+		Assert.assertEquals(getTestSource("Expected_CTestSource1.java"),
 				writer.toString());
 	}
 
