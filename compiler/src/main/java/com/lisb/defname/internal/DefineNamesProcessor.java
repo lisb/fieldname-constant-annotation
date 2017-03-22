@@ -81,6 +81,12 @@ public class DefineNamesProcessor extends AbstractProcessor {
 		}
 	}
 
+	private void logNote(String message) {
+		if (processingEnv.getOptions().containsKey("debug")) {
+			processingEnv.getMessager().printMessage(Kind.NOTE, message);
+		}
+	}
+
 	private Map<TypeElement, DefineNameClassWriter> createClassWriter(
 			final RoundEnvironment env) {
 		final Map<TypeElement, DefineNameClassWriter> targetClassMap = new HashMap<TypeElement, DefineNameClassWriter>();
@@ -89,8 +95,7 @@ public class DefineNamesProcessor extends AbstractProcessor {
 			final ElementKind kind = element.getKind();
 			if (kind.isClass()) {
                 final TypeElement typeElement = (TypeElement) element;
-                processingEnv.getMessager().printMessage(Kind.NOTE,
-                        "create defname of class \"" + typeElement.getSimpleName() + "\".");
+				logNote("Create defname of class \"" + typeElement.getSimpleName() + "\".");
                 final boolean withStaticField = typeElement.getAnnotation(DefineNames.class).withStaticField();
                 final DefineNameClassWriter classWriter = getOrCreateClassWriter(
                         targetClassMap, typeElement);
