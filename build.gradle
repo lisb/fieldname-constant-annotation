@@ -1,12 +1,29 @@
 apply plugin: 'java'
 
-description = "defname"
-
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 }
+
+buildscript {
+    ext.repository_name = 'GitHubPackages'
+    ext.repository_url = 'https://maven.pkg.github.com/lisb/fieldname-constant-annotation'
+		ext.package_group_id = 'com.lisb.fieldname-constant-annotation'
+		ext.package_version = '1.0.1'
+    ext.localProps = new Properties()
+    localProps.load(rootProject.file('local.properties').newDataInputStream())
+
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.1.1'
+
+    }
+}
+
 
 allprojects {
     repositories {

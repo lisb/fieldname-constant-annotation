@@ -1,13 +1,36 @@
 apply plugin: 'java'
-apply plugin: 'maven'
-
-group = 'com.lisb.defname'
-version = '1.0.1'
-archivesBaseName = 'annotation'
+apply plugin: 'maven-publish'
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
 sourceCompatibility = "1.6"
 targetCompatibility = "1.6"
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    archiveClassifier.set('sources')
+    from sourceSets.main.allSource
+}
+
+publishing {
+    repositories {
+        maven {
+            name = repository_name
+            url = repository_url
+            credentials {
+                username = localProps["gpr.user"] ?: System.getenv("GPR_USER")
+                password = localProps["gpr.key"] ?: System.getenv("GPR_KEY")
+            }
+        }
+    }
+    publications {
+        release(MavenPublication) {
+            from components.java
+            artifact tasks.sourcesJar
+            groupId = package_group_id
+            artifactId = 'annotation'
+            version = package_version
+        }
+    }
+}
