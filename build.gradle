@@ -30,6 +30,6 @@ allprojects {
         mavenLocal()
         mavenCentral()
         jcenter()
-        maven { url "http://maven.seasar.org/maven2" }
+        maven { url "https://maven.seasar.org/maven2" }
     }
 }
