@@ -9,8 +9,8 @@ tasks.withType(JavaCompile) {
 buildscript {
     ext.repository_name = 'GitHubPackages'
     ext.repository_url = 'https://maven.pkg.github.com/lisb/fieldname-constant-annotation'
-		ext.package_group_id = 'com.lisb.fieldname-constant-annotation'
-		ext.package_version = '1.0.1'
+    ext.package_group_id = 'com.lisb.fieldname-constant-annotation'
+    ext.package_version = '2.0.0-SNAPSHOT'
     ext.localProps = new Properties()
     localProps.load(rootProject.file('local.properties').newDataInputStream())
 
