@@ -1,7 +1,7 @@
 apply plugin: 'java'
 
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 }
@@ -30,6 +30,6 @@ allprojects {
         mavenLocal()
         mavenCentral()
         jcenter()
-        maven { url "http://maven.seasar.org/maven2" }
+        maven { url "https://maven.seasar.org/maven2" }
     }
 }
