@@ -11,7 +11,7 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.lisb.defname.DefineName
 import com.lisb.defname.DefineNames
-import java.io.IOException
+import com.lisb.google.devtools.ksp.symbol.KSClassDeclarationExt.getFields
 import java.io.OutputStreamWriter
 
 class DefineNamesProvider : SymbolProcessorProvider {
@@ -35,29 +35,26 @@ class DefineNamesProvider : SymbolProcessorProvider {
                     ksAnnotated.simpleName.asString(),
                     defineNamesAnnotation.value
                 )
-                for (property in ksAnnotated.getAllProperties()) {
+                for (property in ksAnnotated.getFields(defineNamesAnnotation.withStaticField)) {
                     val annotation = property.getAnnotationsByType(DefineName::class).firstOrNull()
-                    if (annotation == null) {
-                        classWriter.addFields(property.simpleName.asString())
-                    } else {
-                        classWriter.addFields(annotation.value)
-                    }
+                    val fieldName = annotation?.value ?: property.simpleName.asString()
+                    classWriter.addFields(fieldName)
                 }
                 val dependencies = Dependencies(false, requireNotNull(ksAnnotated.containingFile))
-                try {
-                    environment.codeGenerator.createNewFile(
-                        dependencies,
-                        ksAnnotated.packageName.asString(),
-                        classWriter.className,
-                        extensionName = "java"
-                    ).use { writer ->
-                        classWriter.write(OutputStreamWriter(writer))
-                    }
-                } catch (_: IOException) {
-                    // Handle the exception, possibly logging it
+                environment.codeGenerator.createNewFile(
+                    dependencies,
+                    ksAnnotated.packageName.asString(),
+                    classWriter.className,
+                    extensionName = FILE_EXTENSION_NAME,
+                ).use { writer ->
+                    classWriter.write(OutputStreamWriter(writer))
                 }
             }
             return emptyList()
         }
+    }
+
+    companion object {
+        private const val FILE_EXTENSION_NAME = "java"
     }
 }
