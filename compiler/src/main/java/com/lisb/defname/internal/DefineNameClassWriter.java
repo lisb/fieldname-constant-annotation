@@ -46,6 +46,10 @@ class DefineNameClassWriter {
 				+ targetClassSimpleName + GENERATE_CLASS_SUFFIX;
 	}
 
+	String getClassName() {
+		return GENERATE_CLASS_PREFIX + targetClassSimpleName + GENERATE_CLASS_SUFFIX;
+	}
+
 	void write(final Writer writer) throws IOException {
 		JavaWriter javaWriter = null;
 		try {
