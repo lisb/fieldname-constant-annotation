@@ -1,12 +1,12 @@
 apply plugin: 'java'
+apply plugin: 'kotlin'
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 }
 
 buildscript {
+    ext.kotlin_version = '2.2.0'
     ext.repository_name = 'GitHubPackages'
     ext.repository_url = 'https://maven.pkg.github.com/lisb/fieldname-constant-annotation'
     ext.package_group_id = 'com.lisb.fieldname-constant-annotation'
@@ -20,6 +20,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.1.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
     }
 }
@@ -32,4 +33,13 @@ allprojects {
         jcenter()
         maven { url "https://maven.seasar.org/maven2" }
     }
+}
+repositories {
+    mavenCentral()
+}
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+}
+kotlin {
+    jvmToolchain(8)
 }
