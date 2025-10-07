@@ -6,6 +6,7 @@ import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.KSAnnotated
+import com.lisb.google.devtools.ksp.symbol.KSClassDeclarationExt.getAllParentFiles
 import com.lisb.google.devtools.ksp.symbol.KSClassDeclarationExt.getFields
 import com.lisb.java.io.File.FileExt.toSourceFile
 import com.tschuchort.compiletesting.KotlinCompilation
@@ -16,6 +17,47 @@ import org.junit.Test
 import java.io.File
 
 class KSClassDeclarationExtTest {
+    @OptIn(ExperimentalCompilerApi::class)
+    @Test
+    fun testGetAllParentFiles() {
+        val result = KotlinCompilation().apply {
+            configureKsp(useKsp2 = true) {
+                symbolProcessorProviders += TestGetAllParentFilesProvider()
+            }
+            sources = listOf(
+                File("src/test/java/com/lisb/google/devtools/ksp/symbol/TestSource3.kt").toSourceFile(),
+                File("src/test/java/com/lisb/google/devtools/ksp/symbol/TestSource3Parent.kt").toSourceFile(),
+                File("src/test/java/com/lisb/google/devtools/ksp/symbol/TestSource3GrandParent.kt").toSourceFile(),
+            )
+        }.compile()
+        assertEquals(result.messages, result.exitCode, KotlinCompilation.ExitCode.OK)
+    }
+
+    private class TestGetAllParentFilesProvider : SymbolProcessorProvider {
+        override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
+            return Processor()
+        }
+
+        private class Processor() : SymbolProcessor {
+
+            @OptIn(KspExperimental::class)
+            override fun process(resolver: Resolver): List<KSAnnotated> {
+                val name =
+                    resolver.getKSNameFromString("com.lisb.google.devtools.ksp.symbol.TestSource3")
+                val parentFiles = resolver.getClassDeclarationByName(name)!!.getAllParentFiles()
+                assertEquals(
+                    parentFiles.map { it.declarations.first().qualifiedName!!.asString() }
+                        .sorted(),
+                    listOf(
+                        "com.lisb.google.devtools.ksp.symbol.TestSource3Parent",
+                        "com.lisb.google.devtools.ksp.symbol.TestSource3GrandParent"
+                    ).sorted()
+                )
+                return emptyList()
+            }
+        }
+    }
+
     @OptIn(ExperimentalCompilerApi::class)
     @Test
     fun testGetFieldsWithStaticField() {

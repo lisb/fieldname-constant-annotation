@@ -1,6 +1,7 @@
 package com.lisb.google.devtools.ksp.symbol
 
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.symbol.Modifier
 
@@ -35,5 +36,14 @@ object KSClassDeclarationExt {
         val parent =
             this.superTypes.firstNotNullOfOrNull { it.resolve().declaration as? KSClassDeclaration }
         parent?.getAllFieldsIncludingStatic(fields, true)
+    }
+
+    fun KSClassDeclaration.getAllParentFiles(): List<KSFile> {
+        val parents = mutableListOf<KSFile>()
+        for (parent in this.superTypes.mapNotNull { it.resolve().declaration as? KSClassDeclaration }) {
+            parent.containingFile?.let { parents.add(it) }
+            parents.addAll(parent.getAllParentFiles())
+        }
+        return parents
     }
 }

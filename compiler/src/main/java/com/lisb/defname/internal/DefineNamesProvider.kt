@@ -11,6 +11,7 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.lisb.defname.DefineName
 import com.lisb.defname.DefineNames
+import com.lisb.google.devtools.ksp.symbol.KSClassDeclarationExt.getAllParentFiles
 import com.lisb.google.devtools.ksp.symbol.KSClassDeclarationExt.getFields
 import java.io.OutputStreamWriter
 
@@ -40,7 +41,11 @@ class DefineNamesProvider : SymbolProcessorProvider {
                     val fieldName = annotation?.value ?: property.simpleName.asString()
                     classWriter.addFields(fieldName)
                 }
-                val dependencies = Dependencies(false, requireNotNull(ksAnnotated.containingFile))
+                val parentFiles = ksAnnotated.getAllParentFiles()
+                val allFiles =
+                    ksAnnotated.containingFile?.let { parentFiles.plus(it) } ?: parentFiles
+                val dependencies =
+                    Dependencies(aggregating = false, sources = allFiles.toTypedArray())
                 environment.codeGenerator.createNewFile(
                     dependencies,
                     ksAnnotated.packageName.asString(),
