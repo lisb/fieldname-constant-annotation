@@ -22,6 +22,48 @@ import java.io.File
 class KSClassDeclarationExtTest {
     @OptIn(ExperimentalCompilerApi::class)
     @Test
+    fun testGetAllParentFiles() {
+        val result = KotlinCompilation().apply {
+            configureKsp(useKsp2 = true) {
+                symbolProcessorProviders += TestGetAllParentFilesProvider()
+            }
+            sources = listOf(
+                File("src/test/java/com/lisb/defname/internal/TestSource3.kt").toSourceFile(),
+                File("src/test/java/com/lisb/defname/internal/TestSource3Parent.kt").toSourceFile(),
+                File("src/test/java/com/lisb/defname/internal/TestSource3GrandParent.kt").toSourceFile(),
+                File("../annotation/src/main/java/com/lisb/defname/DefineNames.java").toSourceFile(),
+            )
+        }.compile()
+        assertEquals(result.messages, result.exitCode, KotlinCompilation.ExitCode.OK)
+    }
+
+    private class TestGetAllParentFilesProvider : SymbolProcessorProvider {
+        override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
+            return Processor()
+        }
+
+        private class Processor() : SymbolProcessor {
+
+            @OptIn(KspExperimental::class)
+            override fun process(resolver: Resolver): List<KSAnnotated> {
+                val name = DefineNames::class.qualifiedName
+                if (name == null) {
+                    fail("Cannot get qualified name of DefineNames")
+                    return emptyList()
+                }
+                val ksAnnotated = resolver.getSymbolsWithAnnotation(annotationName = name).first()
+                val parentFiles = (ksAnnotated as KSClassDeclaration).getAllParentFiles()
+                assertEquals(
+                    parentFiles.map { it.fileName }.sorted(),
+                    listOf("TestSource3Parent.kt", "TestSource3GrandParent.kt").sorted()
+                )
+                return emptyList()
+            }
+        }
+    }
+
+    @OptIn(ExperimentalCompilerApi::class)
+    @Test
     fun testGetFields() {
         val result = KotlinCompilation().apply {
             configureKsp(useKsp2 = true) {
