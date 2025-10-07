@@ -46,6 +46,7 @@ class DefineNamesProviderTest {
             }
             sources = listOf(
                 File("src/test/java/com/lisb/defname/internal/TestSource2.java").toSourceFile(),
+                File("src/test/java/com/lisb/defname/internal/TestSource2Parent.java").toSourceFile(),
                 File("../annotation/src/main/java/com/lisb/defname/DefineNames.java").toSourceFile(),
                 File("../annotation/src/main/java/com/lisb/defname/DefineName.java").toSourceFile(),
             )
