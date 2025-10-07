@@ -16,7 +16,6 @@ dependencyResolutionManagement {
         mavenCentral()
         jcenter()
         maven { url "https://maven.seasar.org/maven2" }
-        gradlePluginPortal()
     }
 }
 
