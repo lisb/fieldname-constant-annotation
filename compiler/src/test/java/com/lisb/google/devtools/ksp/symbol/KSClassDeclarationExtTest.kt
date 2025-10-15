@@ -25,9 +25,9 @@ class KSClassDeclarationExtTest {
                 symbolProcessorProviders += TestGetAllParentFilesProvider()
             }
             sources = listOf(
-                File("src/test/java/com/lisb/google/devtools/ksp/symbol/TestSource3.kt").toSourceFile(),
-                File("src/test/java/com/lisb/google/devtools/ksp/symbol/TestSource3Parent.kt").toSourceFile(),
-                File("src/test/java/com/lisb/google/devtools/ksp/symbol/TestSource3GrandParent.kt").toSourceFile(),
+                File("src/test/java/com/lisb/google/devtools/ksp/symbol/TestSource1.kt").toSourceFile(),
+                File("src/test/java/com/lisb/google/devtools/ksp/symbol/TestSource1Parent.kt").toSourceFile(),
+                File("src/test/java/com/lisb/google/devtools/ksp/symbol/TestSource1GrandParent.kt").toSourceFile(),
             )
         }.compile()
         assertEquals(result.messages, result.exitCode, KotlinCompilation.ExitCode.OK)
@@ -43,14 +43,14 @@ class KSClassDeclarationExtTest {
             @OptIn(KspExperimental::class)
             override fun process(resolver: Resolver): List<KSAnnotated> {
                 val name =
-                    resolver.getKSNameFromString("com.lisb.google.devtools.ksp.symbol.TestSource3")
+                    resolver.getKSNameFromString("com.lisb.google.devtools.ksp.symbol.TestSource1")
                 val parentFiles = resolver.getClassDeclarationByName(name)!!.getAllParentFiles()
                 assertEquals(
                     parentFiles.map { it.declarations.first().qualifiedName!!.asString() }
                         .sorted(),
                     listOf(
-                        "com.lisb.google.devtools.ksp.symbol.TestSource3Parent",
-                        "com.lisb.google.devtools.ksp.symbol.TestSource3GrandParent"
+                        "com.lisb.google.devtools.ksp.symbol.TestSource1Parent",
+                        "com.lisb.google.devtools.ksp.symbol.TestSource1GrandParent"
                     ).sorted()
                 )
                 return emptyList()
@@ -79,9 +79,9 @@ class KSClassDeclarationExtTest {
                 }
             }
             sources = listOf(
-                File("src/test/java/com/lisb/google/devtools/ksp/symbol/TestSource4.java").toSourceFile(),
-                File("src/test/java/com/lisb/google/devtools/ksp/symbol/TestSource4Parent.java").toSourceFile(),
-                File("src/test/java/com/lisb/google/devtools/ksp/symbol/TestSource4GrandParent.java").toSourceFile(),
+                File("src/test/java/com/lisb/google/devtools/ksp/symbol/TestSource2.java").toSourceFile(),
+                File("src/test/java/com/lisb/google/devtools/ksp/symbol/TestSource2Parent.java").toSourceFile(),
+                File("src/test/java/com/lisb/google/devtools/ksp/symbol/TestSource2GrandParent.java").toSourceFile(),
             )
         }.compile()
         assertEquals(result.messages, result.exitCode, KotlinCompilation.ExitCode.OK)
@@ -105,9 +105,9 @@ class KSClassDeclarationExtTest {
                 }
             }
             sources = listOf(
-                File("src/test/java/com/lisb/google/devtools/ksp/symbol/TestSource4.java").toSourceFile(),
-                File("src/test/java/com/lisb/google/devtools/ksp/symbol/TestSource4Parent.java").toSourceFile(),
-                File("src/test/java/com/lisb/google/devtools/ksp/symbol/TestSource4GrandParent.java").toSourceFile(),
+                File("src/test/java/com/lisb/google/devtools/ksp/symbol/TestSource2.java").toSourceFile(),
+                File("src/test/java/com/lisb/google/devtools/ksp/symbol/TestSource2Parent.java").toSourceFile(),
+                File("src/test/java/com/lisb/google/devtools/ksp/symbol/TestSource2GrandParent.java").toSourceFile(),
             )
         }.compile()
         assertEquals(result.messages, result.exitCode, KotlinCompilation.ExitCode.OK)
@@ -126,7 +126,7 @@ class KSClassDeclarationExtTest {
             @OptIn(KspExperimental::class)
             override fun process(resolver: Resolver): List<KSAnnotated> {
                 val name =
-                    resolver.getKSNameFromString("com.lisb.google.devtools.ksp.symbol.TestSource4")
+                    resolver.getKSNameFromString("com.lisb.google.devtools.ksp.symbol.TestSource2")
                 val fields =
                     resolver.getClassDeclarationByName(name)!!
                         .getFields(withStaticField = withStaticField)
