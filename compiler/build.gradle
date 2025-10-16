@@ -1,16 +1,20 @@
-apply plugin: 'java'
-apply plugin: 'maven-publish'
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'com.google.devtools.ksp'
+    id 'maven-publish'
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':annotation')
     implementation group: 'com.squareup', name: 'javawriter', version:'2.1.1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "com.google.devtools.ksp:symbol-processing-api:2.2.20-2.0.3"
     testImplementation group: 'junit', name: 'junit', version:'4.8.1'
-    testImplementation group: 'org.seasar.aptina', name: 'aptina-unit', version:'1.0.0'
+    testImplementation("dev.zacsweers.kctfork:ksp:0.9.0")
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     archiveClassifier.set('sources')
@@ -37,4 +41,7 @@ publishing {
             version = package_version
         }
     }
+}
+kotlin {
+    jvmToolchain(8)
 }

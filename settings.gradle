@@ -1,2 +1,23 @@
+pluginManagement {
+    repositories {
+        google()
+        jcenter()
+    }
+    plugins {
+        id 'org.jetbrains.kotlin.jvm' version '2.2.0' apply false
+        id 'com.google.devtools.ksp' version '2.2.20-2.0.3' apply false
+        id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
+    }
+}
+
+dependencyResolutionManagement {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        maven { url "https://maven.seasar.org/maven2" }
+    }
+}
+
 include ':annotation', ':compiler'
 rootProject.name = 'fieldname-constant-annotation'
